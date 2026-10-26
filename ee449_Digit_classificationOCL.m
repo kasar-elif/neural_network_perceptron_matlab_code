@@ -22,47 +22,38 @@ for i = 1:10
     X(:,i) = digits{i}(:);
 end
 
+
 T = eye(10);
 
-%perceptron eğitimini ypmya çalıştığum yer
-
-
-
-W = zeros(10,35);
+W = rand(10, 35);
 eta = 0.1;
 epok = 1000;
 dongu = 0;
 training_ok = false;
 
 while ~training_ok && dongu < epok
-
     training_ok = true;
 
     for i = 1:10
+        input = x(:,i);
+        target = T(:,i);
 
-        girisVektoru = X(:,i);
+        net = W * input;
+        output = net >= 0;
+        error = target - output;
 
-    
-        net = W * girisVektoru;
-
-        [~, tahminSinifi] = max(net);
-
-        
-        if tahminSinifi ~= i
-
-            W(i,:) = W(i,:) + eta * girisVektoru';
-            W(tahminSinifi,:) = W(tahminSinifi,:) ...
-                - eta * girisVektoru';
-
-            training_ok = false;
-
+        if sum(abs(error)) ~= 0
+            
+            delta_W = eta * error * input';
+            
+            W = W + delta_W; 
+            
+            training_ok = false; 
         end
-
     end
-
     dongu = dongu + 1;
-
 end
+
 
 fprintf('Egitim tamamlandi.\n');
 fprintf('Epoch sayisi: %d\n', dongu);
